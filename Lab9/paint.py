@@ -1,17 +1,21 @@
 '''
+    - P: Ручка (Рисовать линии)
+    - R: Прямоугольник
+    - C: Круг
+    - S: Квадрат
+    - T: Прямоугольный треугольник
+    - U: Равносторонний треугольник
+    - H: Ромб
+    - E: Стереть
+    - Q: Очистить экран
 
-    - R - режим прямоугольника.
-    - C - режим круга.
-    - P - режим ручки.
-    - E - режим ластика.
-    - Q - очистить экран.
-
-    - 1 - черный.
-    - 2 - зеленый.
-    - 3 - красный.
-    - 4 - синий.
-    - 5 - желтый.
+    - 1: Черный
+    - 2: Зеленый
+    - 3: Красный
+    - 4: Синий
+    - 5: Желтый
 '''
+
 
 
 
@@ -72,6 +76,47 @@ def drawRectangle(screen, start, end, width, color):
     if x2 > x1 and y1 > y2:
         pygame.draw.rect(screen, pygame.Color(color), (x1, y2, widthr, height), width)
 
+def drawSquare(screen, start, end, color):
+    x1, y1 = start
+    x2, y2 = end
+    mn = min(abs(x2 - x1), abs(y2 - y1))
+    if x2 > x1 and y2 > y1:
+        pygame.draw.rect(screen, pygame.Color(color), (x1, y1, mn, mn))
+    if y2 > y1 and x1 > x2:
+        pygame.draw.rect(screen, pygame.Color(color), (x2, y1, mn, mn))
+    if x1 > x2 and y1 > y2:
+        pygame.draw.rect(screen, pygame.Color(color), (x2, y2, mn, mn))
+    if x2 > x1 and y1 > y2:
+        pygame.draw.rect(screen, pygame.Color(color), (x1, y2, mn, mn))
+
+def drawRightTriangle(screen, start, end, color):
+    x1, y1 = start
+    x2, y2 = end
+    if x2 > x1 and y2 > y1:
+        pygame.draw.polygon(screen, pygame.Color(color), ((x1, y1), (x2, y2), (x1, y2)))
+    if y2 > y1 and x1 > x2:
+        pygame.draw.polygon(screen, pygame.Color(color), ((x1, y1), (x2, y2), (x1, y2)))
+    if x1 > x2 and y1 > y2:
+        pygame.draw.polygon(screen, pygame.Color(color), ((x1, y1), (x2, y2), (x2, y1)))
+    if x2 > x1 and y1 > y2:
+        pygame.draw.polygon(screen, pygame.Color(color), ((x1, y1), (x2, y2), (x2, y1)))
+
+def drawEquilateralTriangle(screen, start, end, width, color):
+    x1, y1 = start
+    x2, y2 = end
+    width_b = abs(x2 - x1)
+    height = (3 ** 0.5) * width_b / 2
+    if y2 > y1:
+        pygame.draw.polygon(screen, pygame.Color(color), ((x1, y2), (x2, y2), ((x1 + x2) / 2, y2 - height)), width)
+    else:
+        pygame.draw.polygon(screen, pygame.Color(color), ((x1, y1), (x2, y1), ((x1 + x2) / 2, y1 - height)))
+
+def drawRhombus(screen, start, end, width, color):
+    x1, y1 = start
+    x2, y2 = end
+    pygame.draw.lines(screen, pygame.Color(color), True,
+                      (((x1 + x2) / 2, y1), (x1, (y1 + y2) / 2), ((x1 + x2) / 2, y2), (x2, (y1 + y2) / 2)), width)
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -82,6 +127,7 @@ while True:
             if event.key == pygame.K_c: mode = 'circle'
             if event.key == pygame.K_p: mode = 'pen'
             if event.key == pygame.K_e: mode = 'erase'
+            if event.key == pygame.K_s: mode = 'square'
             if event.key == pygame.K_q: screen.fill(pygame.Color('white'))
 
             if event.key == pygame.K_1: color = 'black'
@@ -89,6 +135,9 @@ while True:
             if event.key == pygame.K_3: color = 'red'
             if event.key == pygame.K_4: color = 'blue'
             if event.key == pygame.K_5: color = 'yellow'
+            if event.key == pygame.K_t: mode = 'right_tri'
+            if event.key == pygame.K_u: mode = 'eq_tri'
+            if event.key == pygame.K_h: mode = 'rhombus'
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             draw = True
@@ -98,6 +147,10 @@ while True:
         if event.type == pygame.MOUSEBUTTONUP:
             if mode == 'rectangle': drawRectangle(screen, prevPos, event.pos, radius, color)
             elif mode == 'circle': drawCircle(screen, prevPos, event.pos, radius, color)
+            elif mode == 'square': drawSquare(screen, prevPos, event.pos, color)
+            elif mode == 'right_tri': drawRightTriangle(screen, prevPos, event.pos, color)
+            elif mode == 'eq_tri': drawEquilateralTriangle(screen, prevPos, event.pos, radius, color)
+            elif mode == 'rhombus': drawRhombus(screen, prevPos, event.pos, radius, color)
             draw = False
 
         if event.type == pygame.MOUSEMOTION:
