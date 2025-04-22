@@ -88,15 +88,16 @@ while not done:
                 next_dir = "right"
             if event.key == pygame.K_p:
                 paused = not paused
-            if event.key == pygame.K_s:
-                save_user()
+                if paused:
+                    font = pygame.font.SysFont("times new roman", 30)
+                    pause_surface = font.render("Paused", True, (255, 255, 0))
+                    pause_rect = pause_surface.get_rect(center=(width // 2, height // 2))
+                    screen.blit(pause_surface, pause_rect)
+                    pygame.display.update()
+                else:
+                    save_user()
 
     if paused:
-        font = pygame.font.SysFont("times new roman", 30)
-        pause_surface = font.render("Paused", True, (255, 255, 0))
-        pause_rect = pause_surface.get_rect(center=(width // 2, height // 2))
-        screen.blit(pause_surface, pause_rect)
-        pygame.display.update()
         pygame.time.delay(100)
         continue
 
